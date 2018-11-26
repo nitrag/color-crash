@@ -16,11 +16,11 @@
       },
       "resources": {
         "manifest": {
-          "eTag": "9d46ea8b4bd9118e4eb13ac503b195f0"
+          "eTag": "2319ed0bc5ce2af2bd8fa5a6ccb92171"
         },
         "interactionModel": {
           "en-GB": {
-            "eTag": "a7e7ba8d676cf7927ec8922dfe057933"
+            "eTag": "8c59cd8e4cbacd4af88e3bf84e97bfb7"
           },
           "en-US": {
             "eTag": "8539fadef225ad37c7c8661ce5512464"
@@ -36,7 +36,7 @@
             "codeUri": "lambda/custom",
             "functionName": "ask-custom-ColorCrash",
             "handler": "index.handler",
-            "revisionId": "e22068ae-7a0d-4703-8667-d7dc85d427cd",
+            "revisionId": "c04bd8c5-d91c-452a-8957-33e461be1f83",
             "runtime": "nodejs8.10"
           }
         ]

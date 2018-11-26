@@ -119,7 +119,7 @@ const RollCall = {
 
          // setup the output speech that Alexa should speak when roll call is stared, 
          // after the skill is first launched 
-         ctx.outputSpeech = ["Welcome to the Color Changer skill."];
+         ctx.outputSpeech = ["Welcome to the Color Crash skill."];
          ctx.outputSpeech.push("This skill provides a brief introduction to the core");
          ctx.outputSpeech.push("functionality that every Echo Button skill should have.");
          ctx.outputSpeech.push("We'll cover roll call, starting and stopping the Input Handler,");

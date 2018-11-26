@@ -5,8 +5,8 @@
         "en-US": {
           "summary": "This is an example skill to show how to use the Alexa Gadgets API",
           "examplePhrases": [
-            "Alexa, open color changer",
-            "Alexa, launch color changer"
+            "Alexa, open color crash",
+            "Alexa, launch color crash"
           ],
           "keywords": [
             "buttons",
@@ -18,8 +18,8 @@
         "en-GB": {
           "summary": "This is an example skill to show how to use the Alexa Gadgets API",
           "examplePhrases": [
-            "Alexa, open colour changer",
-            "Alexa, launch colour changer"
+            "Alexa, open colour crash",
+            "Alexa, launch colour crash"
           ],
           "keywords": [
             "buttons",
