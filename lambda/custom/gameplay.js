@@ -72,13 +72,20 @@ const GamePlay = {
         const sessionAttributes = attributesManager.getSessionAttributes();
         const { request } = handlerInput.requestEnvelope;
 
-        const colors = ["red", "blue", "green", "yellow"];
+        let deviceIds = sessionAttributes.DeviceIDs;
+        deviceIds = deviceIds.slice(-4);
+        const colors = ["blue", "red", "green", "yellow"];
         const shuffled = shuffle(colors);
+        sessionAttributes.scoreboard = {
+          deviceIds: deviceIds,
+          colors: colors,
+          scores: []
+        }
         sessionAttributes.ColorChoice = '#F0B000';
 
         // Build Start Input Handler Directive
         ctx.directives.push(GadgetDirectives.startInputHandler({
-            'timeout': 30000,
+            'timeout': 10000,
             'recognizers': DIRECT_BUTTON_DOWN_RECOGNIZER,
             'events': DIRECT_MODE_EVENTS
         } ));
@@ -86,9 +93,6 @@ const GamePlay = {
         // Save Input Handler Request ID
         sessionAttributes.CurrentInputHandlerID = request.requestId;
         console.log("Current Input Handler ID: " + sessionAttributes.CurrentInputHandlerID);
-
-        let deviceIds = sessionAttributes.DeviceIDs;
-        deviceIds = deviceIds.slice(-4);
 
         // Build 'idle' breathing animation, based on the users color of choice, that will play immediately
         for(i=0;i<deviceIds.length;i++){
@@ -129,17 +133,21 @@ const GamePlay = {
 
         // The color the user chose
         const uColor = sessionAttributes.ColorChoice;
-        ctx.outputSpeech = ["The input handler has timed out."];
+        ctx.outputSpeech = ["Round over. The scores are as follows: "];
+        var scoreboard = sessionAttributes.scoreboard;
+        for(i=0;i<scoreboard.deviceIds.length;i++){
+          ctx.outputSpeech.push(scoreboard.colors[i] + " player won " + scoreboard.scores[i] + " points.");
+        }
         ctx.outputSpeech.push("That concludes the round, would you like to quit?");
         ctx.reprompt = ["Would you like to exit?"];
         ctx.reprompt.push("Say Yes to exit, or No to keep going");
 
         let deviceIds = sessionAttributes.DeviceIDs;
-        deviceIds = deviceIds.slice(-2);
+        deviceIds = deviceIds.slice(-4);
         // play a custom FadeOut animation, based on the user's selected color
         ctx.directives.push(GadgetDirectives.setIdleAnimation({
             'targetGadgets': deviceIds,
-            'animations': BasicAnimations.FadeOutAnimation(1, '#F0B000', 2000)
+            'animations': BasicAnimations.FadeOutAnimation(1, 'white', 2000)
         }));
         // Reset button animation for skill exit
         ctx.directives.push(GadgetDirectives.setButtonDownAnimation(
@@ -177,6 +185,14 @@ const GamePlay = {
             var buttonNo = deviceIds.indexOf(buttonId);
             ctx.outputSpeech = ["Button " + buttonNo + ". "];
             ctx.outputSpeech.push(Settings.WAITING_AUDIO);
+
+            //get scores
+            var scoreboard = sessionAttributes.scoreboard;
+            var color
+            scoreboard.scores[buttonNo] = 4 - scoreboard.scores.length;
+            //modify
+
+            //Save
         }
 
         ctx.openMicrophone = false;
