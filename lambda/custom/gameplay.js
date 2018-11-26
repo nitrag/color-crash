@@ -65,66 +65,53 @@ const DIRECT_MODE_EVENTS = {
 // ***********************************************************************
 const GamePlay = {
 
-    ColorIntentHandler: function(handlerInput) {
+    StartRoundHandler: function(handlerInput) {
         console.log("GamePlay::colorIntent");
         const {attributesManager} = handlerInput;
         const ctx = attributesManager.getRequestAttributes();
         const sessionAttributes = attributesManager.getSessionAttributes();
         const { request } = handlerInput.requestEnvelope;
                    
-        const uColor = request.intent.slots.color.value;
-        console.log("User color: " + uColor);
         
-        if (uColor === undefined || Settings.COLORS_ALLOWED.indexOf(uColor) === -1) {
-            ctx.reprompt = ["What color was that? Please pick a valid color!"];
-            ctx.outputSpeech = ["Sorry, I didn't get that. " + ctx.reprompt[0]];
-            ctx.openMicrophone = false;
-            return handlerInput.responseBuilder.getResponse();
-        } else {
-            sessionAttributes.ColorChoice = uColor;
+        sessionAttributes.ColorChoice = '#F0B000';
 
-            // Build Start Input Handler Directive
-            ctx.directives.push(GadgetDirectives.startInputHandler({ 
-                'timeout': 30000, 
-                'recognizers': DIRECT_BUTTON_DOWN_RECOGNIZER, 
-                'events': DIRECT_MODE_EVENTS 
-            } ));
+        // Build Start Input Handler Directive
+        ctx.directives.push(GadgetDirectives.startInputHandler({ 
+            'timeout': 30000, 
+            'recognizers': DIRECT_BUTTON_DOWN_RECOGNIZER, 
+            'events': DIRECT_MODE_EVENTS 
+        } ));
 
-            // Save Input Handler Request ID
-            sessionAttributes.CurrentInputHandlerID = request.requestId;
-            console.log("Current Input Handler ID: " + sessionAttributes.CurrentInputHandlerID);
+        // Save Input Handler Request ID
+        sessionAttributes.CurrentInputHandlerID = request.requestId;
+        console.log("Current Input Handler ID: " + sessionAttributes.CurrentInputHandlerID);
 
-            let deviceIds = sessionAttributes.DeviceIDs;
-            deviceIds = deviceIds.slice(-2);
+        let deviceIds = sessionAttributes.DeviceIDs;
+        deviceIds = deviceIds.slice(-4);
 
-            // Build 'idle' breathing animation, based on the users color of choice, that will play immediately
-            ctx.directives.push(GadgetDirectives.setIdleAnimation({ 
-                'targetGadgets': deviceIds, 
-                'animations': BasicAnimations.BreatheAnimation(30, Settings.BREATH_CUSTOM_COLORS[uColor], 450) 
-            } ));
+        // Build 'idle' breathing animation, based on the users color of choice, that will play immediately
+        ctx.directives.push(GadgetDirectives.setIdleAnimation({ 
+            'targetGadgets': deviceIds, 
+            'animations': BasicAnimations.BreatheAnimation(30, '#F0B000', 450) 
+        } ));
 
-            // Build 'button down' animation, based on the users color of choice, for when the button is pressed
-            ctx.directives.push(GadgetDirectives.setButtonDownAnimation({ 
-                'targetGadgets': deviceIds, 
-                'animations': BasicAnimations.SolidAnimation(1, uColor, 2000) 
-            } ));
+        // Build 'button down' animation, based on the users color of choice, for when the button is pressed
+        ctx.directives.push(GadgetDirectives.setButtonDownAnimation({ 
+            'targetGadgets': deviceIds, 
+            'animations': BasicAnimations.SolidAnimation(1, '#F0B000', 2000) 
+        } ));
 
-            // build 'button up' animation, based on the users color of choice, for when the button is released
-            ctx.directives.push(GadgetDirectives.setButtonUpAnimation({ 
-                'targetGadgets': deviceIds, 
-                'animations': BasicAnimations.SolidAnimation(1, uColor, 200) 
-            } ));
+        // build 'button up' animation, based on the users color of choice, for when the button is released
+        ctx.directives.push(GadgetDirectives.setButtonUpAnimation({ 
+            'targetGadgets': deviceIds, 
+            'animations': BasicAnimations.SolidAnimation(1, '#F0B000', 200) 
+        } ));
 
-            ctx.outputSpeech = ["Ok. " + uColor + " it is."];
-            ctx.outputSpeech.push("When you press a button, it will now turn " + uColor + ".");
-            ctx.outputSpeech.push("Pressing the button will also interrupt me if I'm speaking");
-            ctx.outputSpeech.push("or playing music. I'll keep talking so you can interrupt me.");
-            ctx.outputSpeech.push("Go ahead and try it.");
-            ctx.outputSpeech.push(Settings.WAITING_AUDIO);            
-            
-            ctx.openMicrophone = false;
-            return handlerInput.responseBuilder.getResponse();
-        }
+        ctx.outputSpeech = ["Ok. Each player, hit your color.."];
+        ctx.outputSpeech.push(Settings.WAITING_AUDIO);            
+        
+        ctx.openMicrophone = false;
+        return handlerInput.responseBuilder.getResponse();
     },
 
     HandleTimeout: function(handlerInput) {
@@ -145,7 +132,7 @@ const GamePlay = {
         // play a custom FadeOut animation, based on the user's selected color
         ctx.directives.push(GadgetDirectives.setIdleAnimation({ 
             'targetGadgets': deviceIds, 
-            'animations': BasicAnimations.FadeOutAnimation(1, uColor, 2000) 
+            'animations': BasicAnimations.FadeOutAnimation(1, '#F0B000', 2000) 
         }));
         // Reset button animation for skill exit
         ctx.directives.push(GadgetDirectives.setButtonDownAnimation(
@@ -173,6 +160,7 @@ const GamePlay = {
 
         // Checks for Invalid Button ID
         if (deviceIds.indexOf(buttonId) == -1) {
+
             console.log("Button event received for unregisterd gadget.");
             // Don't send any directives back to Alexa for invalid Button ID Events
             ctx.outputSpeech = ["Unregistered button"];

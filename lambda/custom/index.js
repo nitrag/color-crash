@@ -231,7 +231,7 @@ const GlobalHandlers = {
                 return GlobalHandlers.DefaultHandler.handle(handlerInput);
             } else {
                 // ---- Hanlde "Yes" in other cases .. just fall back on the help intent
-                return GlobalHandlers.HelpIntentHandler.handle(handlerInput);
+                return GamePlay.StartRoundHandler(handlerInput);
             }
         }
     },

@@ -233,7 +233,7 @@ const RollCall = {
         //   if not, we will silently ignore the event
         if (sessionAttributes.buttonCount === 0) {                        
             // Say something when we first encounter a button
-            ctx.outputSpeech = ['Hello, button 1.'];
+            ctx.outputSpeech = ['Hello, blue player.'];
             ctx.outputSpeech.push(Settings.WAITING_AUDIO);
 
             let fistButtonId = ctx.gameInputEvents[0].gadgetId;
@@ -262,7 +262,7 @@ const RollCall = {
         //   if not, we will silently ignore the event
         if (sessionAttributes.buttonCount === 1) {                        
             // Say something when we first encounter a button
-            ctx.outputSpeech = ['Hello, button 2.'];
+            ctx.outputSpeech = ['Hello, red player.'];
             ctx.outputSpeech.push(Settings.WAITING_AUDIO);
 
             let fistButtonId = ctx.gameInputEvents[1].gadgetId;
@@ -290,7 +290,7 @@ const RollCall = {
         //   if not, we will silently ignore the event
         if (sessionAttributes.buttonCount === 2) {                        
             // Say something when we first encounter a button
-            ctx.outputSpeech = ['Hello, button 3.'];
+            ctx.outputSpeech = ['Hello, green player.'];
             ctx.outputSpeech.push(Settings.WAITING_AUDIO);
 
             let fistButtonId = ctx.gameInputEvents[2].gadgetId;
@@ -327,18 +327,14 @@ const RollCall = {
             
             sessionAttributes.DeviceIDs[4] = fistButtonId;
             sessionAttributes.buttonCount = 4;
-            ctx.outputSpeech = ['Hello, button 4.'];
+            ctx.outputSpeech = ['Hello, yellow player.  Players, are you ready?'];
+
+            sessionAttributes.state = Settings.SKILL_STATES.PLAY_MODE;
             //ctx.directives.push(GadgetDirectives.setIdleAnimation(
             //    ROLL_CALL_ANIMATIONS.What, { 'targetGadgets': sessionAttributes.DeviceIDs } ));
         }
         
-        ctx.directives.push(GadgetDirectives.startInputHandler({ 
-            'timeout': 10000,
-            'recognizers': ROLL_CALL_RECOGNIZERS, 
-            'events': ROLL_CALL_EVENTS 
-        }));
-
-        ctx.openMicrophone = false;
+        ctx.openMicrophone = true;
         return handlerInput.responseBuilder.getResponse();
     },    
     HandleTimeout: function(handlerInput) {
