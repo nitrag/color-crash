@@ -165,6 +165,7 @@ const GlobalHandlers = {
             let request = handlerInput.requestEnvelope.request;
             const sessionAttributes = attributesManager.getSessionAttributes();
             const ctx = attributesManager.getRequestAttributes();
+
             if (request.originatingRequestId !== sessionAttributes.CurrentInputHandlerID) {
                 console.log("Global.GameEngineInputHandler: stale input event received -> " 
                            +"received event from " + request.originatingRequestId 
@@ -191,22 +192,11 @@ const GlobalHandlers = {
                     case 'forth_button_checked_in':
                         ctx.gameInputEvents = gameEngineEvents[i].inputEvents;
                         return RollCall.HandleForthButtonCheckIn(handlerInput);
-                    case 'button_down_event':
-                        if (sessionAttributes.state == Settings.SKILL_STATES.PLAY_MODE) {
-                            ctx.gameInputEvents = gameEngineEvents[i].inputEvents;
-                            return GamePlay.HandleButtonPressed(handlerInput);
-                        }
-                        break;
-                    case 'timeout':                        
-                        if (sessionAttributes.state == Settings.SKILL_STATES.PLAY_MODE) {
-                            return GamePlay.HandleTimeout(handlerInput);
-                        } else {
-                            RollCall.HandleTimeout(handlerInput);
-                        }
-                        break;
                 }
+
             }
-            return handlerInput.responseBuilder.getResponse();
+            
+            return handlerInput.responseBuilder.getResponse(), end;
         }
     },
     YesIntentHandler: {

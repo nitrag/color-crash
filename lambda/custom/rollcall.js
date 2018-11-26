@@ -32,9 +32,11 @@ const ROLL_CALL_ANIMATIONS = {
         'targetGadgets': [],
         'animations': BasicAnimations.FadeInAnimation(1, "green", 5000)
     },
-    'ButtonCheckInIdle': {
-        'targetGadgets': [],
-        'animations': BasicAnimations.SolidAnimation(1, "green", 8000)
+    'ButtonCheckInIdle': function (color, duration) {
+        return {
+            'targetGadgets': [],
+            'animations': BasicAnimations.SolidAnimation(1, color, duration)
+        };
     },
     'ButtonCheckInDown' : {
         'targetGadgets': [],
@@ -43,6 +45,10 @@ const ROLL_CALL_ANIMATIONS = {
     'ButtonCheckInUp': {                     
         'targetGadgets': [], 
         'animations': BasicAnimations.SolidAnimation(1, "white", 4000)
+    },
+    'What': {                     
+        'targetGadgets': [], 
+        'animations': BasicAnimations.SolidAnimation(1, "red", 4000)
     },
     'Timeout': {
         'targetGadgets': [],
@@ -232,7 +238,7 @@ const RollCall = {
 
             let fistButtonId = ctx.gameInputEvents[0].gadgetId;
             ctx.directives.push(GadgetDirectives.setIdleAnimation(
-                ROLL_CALL_ANIMATIONS.ButtonCheckInIdle, { 'targetGadgets': [fistButtonId] } ));
+                ROLL_CALL_ANIMATIONS.ButtonCheckInIdle('blue', 8000), { 'targetGadgets': [fistButtonId] } ));
             
             sessionAttributes.DeviceIDs[1] = fistButtonId;
 
@@ -261,7 +267,7 @@ const RollCall = {
 
             let fistButtonId = ctx.gameInputEvents[1].gadgetId;
             ctx.directives.push(GadgetDirectives.setIdleAnimation(
-                ROLL_CALL_ANIMATIONS.ButtonCheckInIdle, { 'targetGadgets': [fistButtonId] } ));
+                ROLL_CALL_ANIMATIONS.ButtonCheckInIdle('red', 8000), { 'targetGadgets': [fistButtonId] } ));
             
             sessionAttributes.DeviceIDs[2] = fistButtonId;
             sessionAttributes.buttonCount = 2;
@@ -289,7 +295,7 @@ const RollCall = {
 
             let fistButtonId = ctx.gameInputEvents[2].gadgetId;
             ctx.directives.push(GadgetDirectives.setIdleAnimation(
-                ROLL_CALL_ANIMATIONS.ButtonCheckInIdle, { 'targetGadgets': [fistButtonId] } ));
+                ROLL_CALL_ANIMATIONS.ButtonCheckInIdle('green', 8000), { 'targetGadgets': [fistButtonId] } ));
             
             sessionAttributes.DeviceIDs[3] = fistButtonId;
             sessionAttributes.buttonCount = 3;
@@ -317,12 +323,21 @@ const RollCall = {
 
             let fistButtonId = ctx.gameInputEvents[3].gadgetId;
             ctx.directives.push(GadgetDirectives.setIdleAnimation(
-                ROLL_CALL_ANIMATIONS.ButtonCheckInIdle, { 'targetGadgets': [fistButtonId] } ));
+                ROLL_CALL_ANIMATIONS.ButtonCheckInIdle('yellow', 8000), { 'targetGadgets': [fistButtonId] } ));
             
             sessionAttributes.DeviceIDs[4] = fistButtonId;
             sessionAttributes.buttonCount = 4;
+            ctx.outputSpeech = ['Hello, button 4.'];
+            //ctx.directives.push(GadgetDirectives.setIdleAnimation(
+            //    ROLL_CALL_ANIMATIONS.What, { 'targetGadgets': sessionAttributes.DeviceIDs } ));
         }
-         
+        
+        ctx.directives.push(GadgetDirectives.startInputHandler({ 
+            'timeout': 10000,
+            'recognizers': ROLL_CALL_RECOGNIZERS, 
+            'events': ROLL_CALL_EVENTS 
+        }));
+
         ctx.openMicrophone = false;
         return handlerInput.responseBuilder.getResponse();
     },    
