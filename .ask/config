@@ -1,18 +1,45 @@
 {
   "deploy_settings": {
-    "color-changer": {
-      "skill_id": "",
+    "default": {
+      "skill_id": "amzn1.ask.skill.cfcc5cb5-ecd2-486c-b36f-dda16c884401",
       "was_cloned": false,
       "merge": {
         "manifest": {
           "apis": {
             "custom": {
               "endpoint": {
-                "uri": "ask-custom-ColorChangerSkill"
+                "uri": "arn:aws:lambda:us-east-1:757475688755:function:ask-custom-ColorCrash"
               }
             }
           }
         }
+      },
+      "resources": {
+        "manifest": {
+          "eTag": "9d46ea8b4bd9118e4eb13ac503b195f0"
+        },
+        "interactionModel": {
+          "en-GB": {
+            "eTag": "a7e7ba8d676cf7927ec8922dfe057933"
+          },
+          "en-US": {
+            "eTag": "8539fadef225ad37c7c8661ce5512464"
+          }
+        },
+        "lambda": [
+          {
+            "alexaUsage": [
+              "custom/default"
+            ],
+            "arn": "arn:aws:lambda:us-east-1:757475688755:function:ask-custom-ColorCrash",
+            "awsRegion": "us-east-1",
+            "codeUri": "lambda/custom",
+            "functionName": "ask-custom-ColorCrash",
+            "handler": "index.handler",
+            "revisionId": "e22068ae-7a0d-4703-8667-d7dc85d427cd",
+            "runtime": "nodejs8.10"
+          }
+        ]
       }
     }
   }
