@@ -219,7 +219,6 @@ const RollCall = {
         const ctx = attributesManager.getRequestAttributes();
         const sessionAttributes = attributesManager.getSessionAttributes();
         ctx.outputSpeech = sessionAttributes;
-        
 
         console.log("RollCall:: request attributes  = " + JSON.stringify(ctx, null, 2));
 
@@ -237,8 +236,6 @@ const RollCall = {
             
             sessionAttributes.DeviceIDs[1] = fistButtonId;
 
-            ctx.outputSpeech = fistButtonId;
-            ctx.outputSpeech.push(Settings.WAITING_AUDIO);
             sessionAttributes.buttonCount = 1;
         }
          
@@ -267,7 +264,7 @@ const RollCall = {
                 ROLL_CALL_ANIMATIONS.ButtonCheckInIdle, { 'targetGadgets': [fistButtonId] } ));
             
             sessionAttributes.DeviceIDs[2] = fistButtonId;
-            sessionAttributes.buttonCount = 0;
+            sessionAttributes.buttonCount = 2;
         }
          
         ctx.openMicrophone = false;
@@ -295,7 +292,7 @@ const RollCall = {
                 ROLL_CALL_ANIMATIONS.ButtonCheckInIdle, { 'targetGadgets': [fistButtonId] } ));
             
             sessionAttributes.DeviceIDs[3] = fistButtonId;
-            sessionAttributes.buttonCount = 0;
+            sessionAttributes.buttonCount = 3;
         }
          
         ctx.openMicrophone = false;
@@ -323,7 +320,7 @@ const RollCall = {
                 ROLL_CALL_ANIMATIONS.ButtonCheckInIdle, { 'targetGadgets': [fistButtonId] } ));
             
             sessionAttributes.DeviceIDs[4] = fistButtonId;
-            sessionAttributes.buttonCount = 0;
+            sessionAttributes.buttonCount = 4;
         }
          
         ctx.openMicrophone = false;
