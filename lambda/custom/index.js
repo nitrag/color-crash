@@ -184,6 +184,12 @@ const GlobalHandlers = {
                     case 'second_button_checked_in':
                         ctx.gameInputEvents = gameEngineEvents[i].inputEvents;
                         return RollCall.HandleSecondButtonCheckIn(handlerInput);
+                    case 'third_button_checked_in':
+                        ctx.gameInputEvents = gameEngineEvents[i].inputEvents;
+                        return RollCall.HandleThirdButtonCheckIn(handlerInput);
+                    case 'forth_button_checked_in':
+                        ctx.gameInputEvents = gameEngineEvents[i].inputEvents;
+                        return RollCall.HandleForthButtonCheckIn(handlerInput);
                     case 'button_down_event':
                         if (sessionAttributes.state == Settings.SKILL_STATES.PLAY_MODE) {
                             ctx.gameInputEvents = gameEngineEvents[i].inputEvents;

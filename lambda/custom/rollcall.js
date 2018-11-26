@@ -119,16 +119,7 @@ const RollCall = {
 
          // setup the output speech that Alexa should speak when roll call is stared, 
          // after the skill is first launched 
-         ctx.outputSpeech = ["Welcome to the Color Crash skill."];
-         ctx.outputSpeech.push("This skill provides a brief introduction to the core");
-         ctx.outputSpeech.push("functionality that every Echo Button skill should have.");
-         ctx.outputSpeech.push("We'll cover roll call, starting and stopping the Input Handler,");
-         ctx.outputSpeech.push("button events and Input Handler timeout events. ");
-         ctx.outputSpeech.push("Let's get started with roll call. ");
-         ctx.outputSpeech.push("Roll call wakes up the buttons to make sure");
-         ctx.outputSpeech.push("they're connected and ready for play. ");
-         ctx.outputSpeech.push("Ok. Press the first button and wait for confirmation");
-         ctx.outputSpeech.push("before pressing the second button.");        
+         ctx.outputSpeech = ["Welcome to the Color Crash skill."];     
          ctx.outputSpeech.push(Settings.WAITING_AUDIO);
 
          ctx.timeout = 50000;
@@ -196,63 +187,88 @@ const RollCall = {
          
         ctx.openMicrophone = false;
         return handlerInput.responseBuilder.getResponse();
-    },    
+    },
     HandleSecondButtonCheckIn: function(handlerInput) {
-        console.log("RollCall::InputHandlerEvent::second_button_checked_in");
+        console.log("RollCall::InputHandlerEvent::first_button_checked_in");
         const {attributesManager} = handlerInput;
         const ctx = attributesManager.getRequestAttributes();
         const sessionAttributes = attributesManager.getSessionAttributes();
-        const gameInputEvents = ctx.gameInputEvents;
-        console.log("RollCall::InputHandlerEvent::second_button_checked_in");
-        
-        ctx.reprompt = ["Please pick a color: green, red, or blue"];
-        ctx.outputSpeech = [];
 
-        if (sessionAttributes.buttonCount == 0) {
-            // just got both buttons at the same time
-            ctx.outputSpeech.push("hello buttons 1 and 2");
-            ctx.outputSpeech.push("<break time='1s'/>");
-            ctx.outputSpeech.push("Awesome!");
+        console.log("RollCall:: request attributes  = " + JSON.stringify(ctx, null, 2));
 
-            sessionAttributes.DeviceIDs[1] = gameInputEvents[0].gadgetId;
-            sessionAttributes.DeviceIDs[2] = gameInputEvents[1].gadgetId;
+        // just in case we ever get this event, after the `second_button_checked_in` event
+        //  was already handled, we check the make sure the `buttonCount` attribute is set to 0;
+        //   if not, we will silently ignore the event
+        if (sessionAttributes.buttonCount === 0) {                        
+            // Say something when we first encounter a button
+            ctx.outputSpeech = ['Hello, button 1.'];
+            ctx.outputSpeech.push(Settings.WAITING_AUDIO);
 
-        } else {
-            // already had button 1, just got button 2..
-            ctx.outputSpeech.push("hello, button 2");
-            ctx.outputSpeech.push("<break time='1s'/>");
-            ctx.outputSpeech.push("Awesome. I've registered two buttons.");
-
-            if (sessionAttributes.DeviceIDs.indexOf(gameInputEvents[0].gadgetId) === -1) {
-                sessionAttributes.DeviceIDs[2] = gameInputEvents[0].gadgetId;
-            } else {
-                sessionAttributes.DeviceIDs[2] = gameInputEvents[1].gadgetId;
-            }                        
-        }
-        sessionAttributes.buttonCount = 2;
-        
-        // .. and ask use to pick a color for the next stage of the skill 
-        ctx.outputSpeech.push("Now let's learn about button events.");
-        ctx.outputSpeech.push("Please select one of the following colors: red, blue, or green.");                                  
+            let fistButtonId = ctx.gameInputEvents[0].gadgetId;
+            ctx.directives.push(GadgetDirectives.setIdleAnimation(
+                ROLL_CALL_ANIMATIONS.ButtonCheckInIdle, { 'targetGadgets': [fistButtonId] } ));
             
-        let deviceIds = sessionAttributes.DeviceIDs;
-        deviceIds = deviceIds.slice(-2);
-
-        // send an idle animation to registered buttons
-        ctx.directives.push(GadgetDirectives.setIdleAnimation(
-            ROLL_CALL_ANIMATIONS.RollCallComplete, { 'targetGadgets': deviceIds } ));
-        // reset button press animations until the user chooses a color
-        ctx.directives.push(GadgetDirectives.setButtonDownAnimation(
-            Settings.DEFAULT_ANIMATIONS.ButtonDown));
-        ctx.directives.push(GadgetDirectives.setButtonUpAnimation(
-            Settings.DEFAULT_ANIMATIONS.ButtonUp));
-    
-        sessionAttributes.isRollCallComplete = true;
-        sessionAttributes.state = Settings.SKILL_STATES.PLAY_MODE;
-
-        ctx.openMicrophone = true;
+            sessionAttributes.DeviceIDs[1] = fistButtonId;
+            sessionAttributes.buttonCount = 1;
+        }
+         
+        ctx.openMicrophone = false;
         return handlerInput.responseBuilder.getResponse();
-    },
+    },    
+    HandleThirdButtonCheckIn: function(handlerInput) {
+        console.log("RollCall::InputHandlerEvent::first_button_checked_in");
+        const {attributesManager} = handlerInput;
+        const ctx = attributesManager.getRequestAttributes();
+        const sessionAttributes = attributesManager.getSessionAttributes();
+
+        console.log("RollCall:: request attributes  = " + JSON.stringify(ctx, null, 2));
+
+        // just in case we ever get this event, after the `second_button_checked_in` event
+        //  was already handled, we check the make sure the `buttonCount` attribute is set to 0;
+        //   if not, we will silently ignore the event
+        if (sessionAttributes.buttonCount === 0) {                        
+            // Say something when we first encounter a button
+            ctx.outputSpeech = ['Hello, button 1.'];
+            ctx.outputSpeech.push(Settings.WAITING_AUDIO);
+
+            let fistButtonId = ctx.gameInputEvents[0].gadgetId;
+            ctx.directives.push(GadgetDirectives.setIdleAnimation(
+                ROLL_CALL_ANIMATIONS.ButtonCheckInIdle, { 'targetGadgets': [fistButtonId] } ));
+            
+            sessionAttributes.DeviceIDs[1] = fistButtonId;
+            sessionAttributes.buttonCount = 1;
+        }
+         
+        ctx.openMicrophone = false;
+        return handlerInput.responseBuilder.getResponse();
+    },    
+    HandleForthButtonCheckIn: function(handlerInput) {
+        console.log("RollCall::InputHandlerEvent::first_button_checked_in");
+        const {attributesManager} = handlerInput;
+        const ctx = attributesManager.getRequestAttributes();
+        const sessionAttributes = attributesManager.getSessionAttributes();
+
+        console.log("RollCall:: request attributes  = " + JSON.stringify(ctx, null, 2));
+
+        // just in case we ever get this event, after the `second_button_checked_in` event
+        //  was already handled, we check the make sure the `buttonCount` attribute is set to 0;
+        //   if not, we will silently ignore the event
+        if (sessionAttributes.buttonCount === 0) {                        
+            // Say something when we first encounter a button
+            ctx.outputSpeech = ['Hello, button 1.'];
+            ctx.outputSpeech.push(Settings.WAITING_AUDIO);
+
+            let fistButtonId = ctx.gameInputEvents[0].gadgetId;
+            ctx.directives.push(GadgetDirectives.setIdleAnimation(
+                ROLL_CALL_ANIMATIONS.ButtonCheckInIdle, { 'targetGadgets': [fistButtonId] } ));
+            
+            sessionAttributes.DeviceIDs[1] = fistButtonId;
+            sessionAttributes.buttonCount = 1;
+        }
+         
+        ctx.openMicrophone = false;
+        return handlerInput.responseBuilder.getResponse();
+    },    
     HandleTimeout: function(handlerInput) {
         console.log("rollCallModeIntentHandlers::InputHandlerEvent::timeout");
         const {attributesManager} = handlerInput;
