@@ -20,11 +20,11 @@ const Alexa = require('ask-sdk-core');
 const GadgetDirectives = require('util/gadgetDirectives.js');
 // Basic Animation Helper Library
 const BasicAnimations = require('button_animations/basicAnimations.js');
-// import the skill settings constants 
+// import the skill settings constants
 const Settings = require('settings.js');
 
 
-    
+
 // Define a recognizer for button down events that will match when any button is pressed down.
 // We'll use this recognizer as trigger source for the "button_down_event" during play
 // see: https://developer.amazon.com/docs/gadget-skills/define-echo-button-events.html#recognizers
@@ -71,15 +71,16 @@ const GamePlay = {
         const ctx = attributesManager.getRequestAttributes();
         const sessionAttributes = attributesManager.getSessionAttributes();
         const { request } = handlerInput.requestEnvelope;
-                   
-        
+
+        const colors = ["red", "blue", "green", "yellow"];
+        const shuffled = shuffle(colors);
         sessionAttributes.ColorChoice = '#F0B000';
 
         // Build Start Input Handler Directive
-        ctx.directives.push(GadgetDirectives.startInputHandler({ 
-            'timeout': 30000, 
-            'recognizers': DIRECT_BUTTON_DOWN_RECOGNIZER, 
-            'events': DIRECT_MODE_EVENTS 
+        ctx.directives.push(GadgetDirectives.startInputHandler({
+            'timeout': 30000,
+            'recognizers': DIRECT_BUTTON_DOWN_RECOGNIZER,
+            'events': DIRECT_MODE_EVENTS
         } ));
 
         // Save Input Handler Request ID
@@ -90,26 +91,32 @@ const GamePlay = {
         deviceIds = deviceIds.slice(-4);
 
         // Build 'idle' breathing animation, based on the users color of choice, that will play immediately
-        ctx.directives.push(GadgetDirectives.setIdleAnimation({ 
-            'targetGadgets': deviceIds, 
-            'animations': BasicAnimations.BreatheAnimation(30, '#F0B000', 450) 
-        } ));
+        for(i=0;i<deviceIds.length;i++){
+          ctx.directives.push(GadgetDirectives.setIdleAnimation({
+              'targetGadgets': deviceIds[i],
+              'animations': BasicAnimations.BreatheAnimation(30, shuffled[i], 450)
+          }));
+        }
 
-        // Build 'button down' animation, based on the users color of choice, for when the button is pressed
-        ctx.directives.push(GadgetDirectives.setButtonDownAnimation({ 
-            'targetGadgets': deviceIds, 
-            'animations': BasicAnimations.SolidAnimation(1, '#F0B000', 2000) 
-        } ));
+        for(i=0;i<deviceIds.length;i++){
+          // Build 'button down' animation, based on the users color of choice, for when the button is pressed
+          ctx.directives.push(GadgetDirectives.setButtonDownAnimation({
+              'targetGadgets': deviceIds[i],
+              'animations': BasicAnimations.SolidAnimation(1, shuffled[i], 2000)
+          }));
+        }
 
-        // build 'button up' animation, based on the users color of choice, for when the button is released
-        ctx.directives.push(GadgetDirectives.setButtonUpAnimation({ 
-            'targetGadgets': deviceIds, 
-            'animations': BasicAnimations.SolidAnimation(1, '#F0B000', 200) 
-        } ));
+        for(i=0;i<deviceIds.length;i++){
+          // build 'button up' animation, based on the users color of choice, for when the button is released
+          ctx.directives.push(GadgetDirectives.setButtonUpAnimation({
+              'targetGadgets': deviceIds[i],
+              'animations': BasicAnimations.SolidAnimation(1, shuffled[i], 200)
+          }));
+        }
 
         ctx.outputSpeech = ["Ok. Each player, hit your color.."];
-        ctx.outputSpeech.push(Settings.WAITING_AUDIO);            
-        
+        ctx.outputSpeech.push(Settings.WAITING_AUDIO);
+
         ctx.openMicrophone = false;
         return handlerInput.responseBuilder.getResponse();
     },
@@ -118,32 +125,32 @@ const GamePlay = {
         console.log("GamePlay::InputHandlerEvent::timeout");
         const {attributesManager} = handlerInput;
         const ctx = attributesManager.getRequestAttributes();
-        const sessionAttributes = attributesManager.getSessionAttributes();    
+        const sessionAttributes = attributesManager.getSessionAttributes();
 
         // The color the user chose
         const uColor = sessionAttributes.ColorChoice;
         ctx.outputSpeech = ["The input handler has timed out."];
-        ctx.outputSpeech.push("That concludes our test, would you like to quit?");
+        ctx.outputSpeech.push("That concludes the round, would you like to quit?");
         ctx.reprompt = ["Would you like to exit?"];
         ctx.reprompt.push("Say Yes to exit, or No to keep going");
 
         let deviceIds = sessionAttributes.DeviceIDs;
         deviceIds = deviceIds.slice(-2);
         // play a custom FadeOut animation, based on the user's selected color
-        ctx.directives.push(GadgetDirectives.setIdleAnimation({ 
-            'targetGadgets': deviceIds, 
-            'animations': BasicAnimations.FadeOutAnimation(1, '#F0B000', 2000) 
+        ctx.directives.push(GadgetDirectives.setIdleAnimation({
+            'targetGadgets': deviceIds,
+            'animations': BasicAnimations.FadeOutAnimation(1, '#F0B000', 2000)
         }));
         // Reset button animation for skill exit
         ctx.directives.push(GadgetDirectives.setButtonDownAnimation(
             Settings.DEFAULT_ANIMATIONS.ButtonDown, {'targetGadgets': deviceIds } ));
         ctx.directives.push(GadgetDirectives.setButtonUpAnimation(
             Settings.DEFAULT_ANIMATIONS.ButtonUp, {'targetGadgets': deviceIds } ));
-                
+
         // Set Skill End flag
         sessionAttributes.expectingEndSkillConfirmation = true;
         sessionAttributes.state = Settings.SKILL_STATES.EXIT_MODE;
-                            
+
         ctx.openMicrophone = true;
         return handlerInput.responseBuilder.getResponse();
     },
@@ -152,9 +159,9 @@ const GamePlay = {
         console.log("GamePlay::InputHandlerEvent::button_down_event");
         const {attributesManager} = handlerInput;
         const ctx = attributesManager.getRequestAttributes();
-        const sessionAttributes = attributesManager.getSessionAttributes();   
-        
-        let deviceIds = sessionAttributes.DeviceIDs;        
+        const sessionAttributes = attributesManager.getSessionAttributes();
+
+        let deviceIds = sessionAttributes.DeviceIDs;
         let gameInputEvents = ctx.gameInputEvents;
         let buttonId = gameInputEvents[0].gadgetId;
 
@@ -169,12 +176,31 @@ const GamePlay = {
         } else {
             var buttonNo = deviceIds.indexOf(buttonId);
             ctx.outputSpeech = ["Button " + buttonNo + ". "];
-            ctx.outputSpeech.push(Settings.WAITING_AUDIO);            
-        }        
-        
+            ctx.outputSpeech.push(Settings.WAITING_AUDIO);
+        }
+
         ctx.openMicrophone = false;
         return handlerInput.responseBuilder.getResponse();
     }
 };
+
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
 
 module.exports = GamePlay;
