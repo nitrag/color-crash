@@ -189,7 +189,7 @@ const RollCall = {
         // add a StartInputHandler directive using the ROLL_CALL recognizers and events
         ctx.directives.push(GadgetDirectives.startInputHandler({ 
             'timeout': ctx.timeout, 
-            'proxies': ['first_button', 'second_button'],
+            'proxies': ['first_button', 'second_button', 'third_button', 'forth_button'],
             'recognizers': ROLL_CALL_RECOGNIZERS, 
             'events': ROLL_CALL_EVENTS 
         }));
@@ -219,6 +219,7 @@ const RollCall = {
         const ctx = attributesManager.getRequestAttributes();
         const sessionAttributes = attributesManager.getSessionAttributes();
         ctx.outputSpeech = sessionAttributes;
+        
 
         console.log("RollCall:: request attributes  = " + JSON.stringify(ctx, null, 2));
 
@@ -235,6 +236,9 @@ const RollCall = {
                 ROLL_CALL_ANIMATIONS.ButtonCheckInIdle, { 'targetGadgets': [fistButtonId] } ));
             
             sessionAttributes.DeviceIDs[1] = fistButtonId;
+
+            ctx.outputSpeech = fistButtonId;
+            ctx.outputSpeech.push(Settings.WAITING_AUDIO);
             sessionAttributes.buttonCount = 1;
         }
          
