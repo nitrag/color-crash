@@ -36,7 +36,7 @@
             "codeUri": "lambda/custom",
             "functionName": "ask-custom-ColorCrash",
             "handler": "index.handler",
-            "revisionId": "c04bd8c5-d91c-452a-8957-33e461be1f83",
+            "revisionId": "6ed991fc-3465-45fa-a213-c30b71684f04",
             "runtime": "nodejs8.10"
           }
         ]

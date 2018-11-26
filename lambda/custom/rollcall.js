@@ -79,6 +79,46 @@ const ROLL_CALL_RECOGNIZERS = {
                 "gadgetIds": [ "second_button" ],
                 "action": "down"
             }]
+    },
+    "roll_call_third_button_recognizer": {
+        "type": "match",
+        "fuzzy": true,
+        "anchor": "end",
+        "pattern": [
+            {
+                "gadgetIds": [ "first_button" ],
+                "action": "down"
+            },
+            {
+                "gadgetIds": [ "second_button" ],
+                "action": "down"
+            },
+            {
+                "gadgetIds": [ "third_button" ],
+                "action": "down"
+            }]
+    },
+    "roll_call_forth_button_recognizer": {
+        "type": "match",
+        "fuzzy": true,
+        "anchor": "end",
+        "pattern": [
+            {
+                "gadgetIds": [ "first_button" ],
+                "action": "down"
+            },
+            {
+                "gadgetIds": [ "second_button" ],
+                "action": "down"
+            },
+            {
+                "gadgetIds": [ "third_button" ],
+                "action": "down"
+            },
+            {
+                "gadgetIds": [ "forth_button" ],
+                "action": "down"
+            }]
     }
 };
 
@@ -95,6 +135,18 @@ const ROLL_CALL_EVENTS = {
     },
     "second_button_checked_in": {
         "meets": ["roll_call_second_button_recognizer"],
+        "reports": "matches",
+        "shouldEndInputHandler": false,
+        "maximumInvocations": 1
+    },
+    "third_button_checked_in": {
+        "meets": ["roll_call_third_button_recognizer"],
+        "reports": "matches",
+        "shouldEndInputHandler": false,
+        "maximumInvocations": 1
+    },
+    "forth_button_checked_in": {
+        "meets": ["roll_call_forth_button_recognizer"],
         "reports": "matches",
         "shouldEndInputHandler": true,
         "maximumInvocations": 1
@@ -166,6 +218,7 @@ const RollCall = {
         const {attributesManager} = handlerInput;
         const ctx = attributesManager.getRequestAttributes();
         const sessionAttributes = attributesManager.getSessionAttributes();
+        ctx.outputSpeech = sessionAttributes;
 
         console.log("RollCall:: request attributes  = " + JSON.stringify(ctx, null, 2));
 
@@ -189,81 +242,84 @@ const RollCall = {
         return handlerInput.responseBuilder.getResponse();
     },
     HandleSecondButtonCheckIn: function(handlerInput) {
-        console.log("RollCall::InputHandlerEvent::first_button_checked_in");
+        console.log("RollCall::InputHandlerEvent::second_button_checked_in");
         const {attributesManager} = handlerInput;
         const ctx = attributesManager.getRequestAttributes();
         const sessionAttributes = attributesManager.getSessionAttributes();
+        ctx.outputSpeech = sessionAttributes;
 
         console.log("RollCall:: request attributes  = " + JSON.stringify(ctx, null, 2));
 
         // just in case we ever get this event, after the `second_button_checked_in` event
         //  was already handled, we check the make sure the `buttonCount` attribute is set to 0;
         //   if not, we will silently ignore the event
-        if (sessionAttributes.buttonCount === 0) {                        
+        if (sessionAttributes.buttonCount === 1) {                        
             // Say something when we first encounter a button
-            ctx.outputSpeech = ['Hello, button 1.'];
+            ctx.outputSpeech = ['Hello, button 2.'];
             ctx.outputSpeech.push(Settings.WAITING_AUDIO);
 
-            let fistButtonId = ctx.gameInputEvents[0].gadgetId;
+            let fistButtonId = ctx.gameInputEvents[1].gadgetId;
             ctx.directives.push(GadgetDirectives.setIdleAnimation(
                 ROLL_CALL_ANIMATIONS.ButtonCheckInIdle, { 'targetGadgets': [fistButtonId] } ));
             
-            sessionAttributes.DeviceIDs[1] = fistButtonId;
-            sessionAttributes.buttonCount = 1;
+            sessionAttributes.DeviceIDs[2] = fistButtonId;
+            sessionAttributes.buttonCount = 0;
         }
          
         ctx.openMicrophone = false;
         return handlerInput.responseBuilder.getResponse();
     },    
     HandleThirdButtonCheckIn: function(handlerInput) {
-        console.log("RollCall::InputHandlerEvent::first_button_checked_in");
+        console.log("RollCall::InputHandlerEvent::third_button_checked_in");
         const {attributesManager} = handlerInput;
         const ctx = attributesManager.getRequestAttributes();
         const sessionAttributes = attributesManager.getSessionAttributes();
+        ctx.outputSpeech = sessionAttributes;
 
         console.log("RollCall:: request attributes  = " + JSON.stringify(ctx, null, 2));
 
         // just in case we ever get this event, after the `second_button_checked_in` event
         //  was already handled, we check the make sure the `buttonCount` attribute is set to 0;
         //   if not, we will silently ignore the event
-        if (sessionAttributes.buttonCount === 0) {                        
+        if (sessionAttributes.buttonCount === 2) {                        
             // Say something when we first encounter a button
-            ctx.outputSpeech = ['Hello, button 1.'];
+            ctx.outputSpeech = ['Hello, button 3.'];
             ctx.outputSpeech.push(Settings.WAITING_AUDIO);
 
-            let fistButtonId = ctx.gameInputEvents[0].gadgetId;
+            let fistButtonId = ctx.gameInputEvents[2].gadgetId;
             ctx.directives.push(GadgetDirectives.setIdleAnimation(
                 ROLL_CALL_ANIMATIONS.ButtonCheckInIdle, { 'targetGadgets': [fistButtonId] } ));
             
-            sessionAttributes.DeviceIDs[1] = fistButtonId;
-            sessionAttributes.buttonCount = 1;
+            sessionAttributes.DeviceIDs[3] = fistButtonId;
+            sessionAttributes.buttonCount = 0;
         }
          
         ctx.openMicrophone = false;
         return handlerInput.responseBuilder.getResponse();
     },    
     HandleForthButtonCheckIn: function(handlerInput) {
-        console.log("RollCall::InputHandlerEvent::first_button_checked_in");
+        console.log("RollCall::InputHandlerEvent::forth_button_checked_in");
         const {attributesManager} = handlerInput;
         const ctx = attributesManager.getRequestAttributes();
         const sessionAttributes = attributesManager.getSessionAttributes();
+        ctx.outputSpeech = sessionAttributes;
 
         console.log("RollCall:: request attributes  = " + JSON.stringify(ctx, null, 2));
 
         // just in case we ever get this event, after the `second_button_checked_in` event
         //  was already handled, we check the make sure the `buttonCount` attribute is set to 0;
         //   if not, we will silently ignore the event
-        if (sessionAttributes.buttonCount === 0) {                        
+        if (sessionAttributes.buttonCount === 3) {                        
             // Say something when we first encounter a button
-            ctx.outputSpeech = ['Hello, button 1.'];
+            ctx.outputSpeech = ['Hello, button 4.'];
             ctx.outputSpeech.push(Settings.WAITING_AUDIO);
 
-            let fistButtonId = ctx.gameInputEvents[0].gadgetId;
+            let fistButtonId = ctx.gameInputEvents[3].gadgetId;
             ctx.directives.push(GadgetDirectives.setIdleAnimation(
                 ROLL_CALL_ANIMATIONS.ButtonCheckInIdle, { 'targetGadgets': [fistButtonId] } ));
             
-            sessionAttributes.DeviceIDs[1] = fistButtonId;
-            sessionAttributes.buttonCount = 1;
+            sessionAttributes.DeviceIDs[4] = fistButtonId;
+            sessionAttributes.buttonCount = 0;
         }
          
         ctx.openMicrophone = false;

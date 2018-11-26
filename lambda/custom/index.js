@@ -174,6 +174,7 @@ const GlobalHandlers = {
             }
 
             var gameEngineEvents = request.events || [];
+            ctx.outputSpeech = gameEngineEvents;
             for (var i = 0; i < gameEngineEvents.length; i++) {
                 // In this request type, we'll see one or more incoming events
                 // that correspond to the StartInputHandler we sent above.
