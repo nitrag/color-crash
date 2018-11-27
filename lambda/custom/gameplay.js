@@ -77,7 +77,7 @@ const GamePlay = {
         const colors = ["blue", "red", "green", "yellow"];
         const shuffled = shuffle(colors);
         sessionAttributes.scoreboard = {
-          deviceIds: deviceIds,
+          deviceIds: filtered(deviceIds),
           colors: colors,
           scores: []
         }
@@ -218,5 +218,8 @@ function shuffle(array) {
 
   return array;
 }
+var filtered = array.filter(function (el) {
+  return el != null;
+});
 
 module.exports = GamePlay;

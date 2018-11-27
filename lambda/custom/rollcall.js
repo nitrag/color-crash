@@ -239,7 +239,7 @@ const RollCall = {
             ctx.directives.push(GadgetDirectives.setIdleAnimation(
                 ROLL_CALL_ANIMATIONS.ButtonCheckInIdle('blue', 8000), { 'targetGadgets': [fistButtonId] } ));
 
-            sessionAttributes.DeviceIDs[1] = fistButtonId;
+            sessionAttributes.DeviceIDs[0] = fistButtonId;
 
             sessionAttributes.buttonCount = 1;
         }
@@ -268,7 +268,7 @@ const RollCall = {
             ctx.directives.push(GadgetDirectives.setIdleAnimation(
                 ROLL_CALL_ANIMATIONS.ButtonCheckInIdle('red', 8000), { 'targetGadgets': [fistButtonId] } ));
 
-            sessionAttributes.DeviceIDs[2] = fistButtonId;
+            sessionAttributes.DeviceIDs[1] = fistButtonId;
             sessionAttributes.buttonCount = 2;
         }
 
@@ -296,7 +296,7 @@ const RollCall = {
             ctx.directives.push(GadgetDirectives.setIdleAnimation(
                 ROLL_CALL_ANIMATIONS.ButtonCheckInIdle('green', 8000), { 'targetGadgets': [fistButtonId] } ));
 
-            sessionAttributes.DeviceIDs[3] = fistButtonId;
+            sessionAttributes.DeviceIDs[2] = fistButtonId;
             sessionAttributes.buttonCount = 3;
         }
 
@@ -324,7 +324,7 @@ const RollCall = {
             ctx.directives.push(GadgetDirectives.setIdleAnimation(
                 ROLL_CALL_ANIMATIONS.ButtonCheckInIdle('yellow', 8000), { 'targetGadgets': [fistButtonId] } ));
 
-            sessionAttributes.DeviceIDs[4] = fistButtonId;
+            sessionAttributes.DeviceIDs[3] = fistButtonId;
             sessionAttributes.buttonCount = 4;
             ctx.outputSpeech = ['Hello, yellow player.  Players, are you ready?'];
 
@@ -347,7 +347,7 @@ const RollCall = {
         ctx.reprompt = ["Say yes to go back and add buttons, or no to exit now."];
 
         let deviceIds = sessionAttributes.DeviceIDs;
-        deviceIds = deviceIds.slice(-2);
+        deviceIds = deviceIds.slice(-4);
 
         ctx.directives.push(GadgetDirectives.setIdleAnimation(
             ROLL_CALL_ANIMATIONS.Timeout, { 'targetGadgets': deviceIds } ));
