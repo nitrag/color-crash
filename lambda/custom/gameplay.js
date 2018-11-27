@@ -95,14 +95,14 @@ const GamePlay = {
         console.log("Current Input Handler ID: " + sessionAttributes.CurrentInputHandlerID);
 
         // Build 'idle' breathing animation, based on the users color of choice, that will play immediately
-        for(i=0;i<deviceIds.length;i++){
+        for(var i=0;i<deviceIds.length;i++){
           ctx.directives.push(GadgetDirectives.setIdleAnimation({
               'targetGadgets': deviceIds[i],
               'animations': BasicAnimations.BreatheAnimation(30, shuffled[i], 450)
           }));
         }
 
-        for(i=0;i<deviceIds.length;i++){
+        for(var i=0;i<deviceIds.length;i++){
           // Build 'button down' animation, based on the users color of choice, for when the button is pressed
           ctx.directives.push(GadgetDirectives.setButtonDownAnimation({
               'targetGadgets': deviceIds[i],
@@ -110,7 +110,7 @@ const GamePlay = {
           }));
         }
 
-        for(i=0;i<deviceIds.length;i++){
+        for(var i=0;i<deviceIds.length;i++){
           // build 'button up' animation, based on the users color of choice, for when the button is released
           ctx.directives.push(GadgetDirectives.setButtonUpAnimation({
               'targetGadgets': deviceIds[i],
@@ -135,7 +135,7 @@ const GamePlay = {
         const uColor = sessionAttributes.ColorChoice;
         ctx.outputSpeech = ["Round over. The scores are as follows: "];
         var scoreboard = sessionAttributes.scoreboard;
-        for(i=0;i<scoreboard.deviceIds.length;i++){
+        for(var i=0;i<scoreboard.deviceIds.length;i++){
           ctx.outputSpeech.push(scoreboard.colors[i] + " player won " + scoreboard.scores[i] + " points.");
         }
         ctx.outputSpeech.push("That concludes the round, would you like to quit?");
