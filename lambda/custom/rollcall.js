@@ -347,7 +347,6 @@ const RollCall = {
         ctx.reprompt = ["Say yes to go back and add buttons, or no to exit now."];
 
         let deviceIds = sessionAttributes.DeviceIDs;
-        deviceIds = deviceIds.slice(-4);
 
         ctx.directives.push(GadgetDirectives.setIdleAnimation(
             ROLL_CALL_ANIMATIONS.Timeout, { 'targetGadgets': deviceIds } ));

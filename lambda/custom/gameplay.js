@@ -77,7 +77,7 @@ const GamePlay = {
         const colors = ["blue", "red", "green", "yellow"];
         const shuffled = shuffle(colors);
         sessionAttributes.scoreboard = {
-          deviceIds: filtered(deviceIds),
+          deviceIds: deviceIds,
           colors: colors,
           scores: []
         }
@@ -143,7 +143,7 @@ const GamePlay = {
         ctx.reprompt.push("Say Yes to exit, or No to keep going");
 
         let deviceIds = sessionAttributes.DeviceIDs;
-        deviceIds = deviceIds.slice(-4);
+
         // play a custom FadeOut animation, based on the user's selected color
         ctx.directives.push(GadgetDirectives.setIdleAnimation({
             'targetGadgets': deviceIds,
@@ -218,8 +218,5 @@ function shuffle(array) {
 
   return array;
 }
-var filtered = array.filter(function (el) {
-  return el != null;
-});
 
 module.exports = GamePlay;
